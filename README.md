@@ -10,7 +10,7 @@ Este es el archivo de configuración que debes colocar en `~/.config/nvim/init.l
 ```lua
 -- Configuraciones básicas
 vim.opt.number = true               -- Habilitar numeración
-vim.opt.relativenumber = true       -- Numeración relativa
+-- vim.opt.relativenumber = true       -- Numeración relativa
 vim.opt.wildmenu = true             -- Habilitar autocompletado de comandos
 vim.opt.hlsearch = true             -- Resaltar búsqueda
 vim.opt.incsearch = true            -- Actualización en tiempo real al escribir
@@ -113,6 +113,17 @@ Asegúrate de tener la versión más reciente de Neovim instalada. Si no la tien
   sudo apt install neovim
   ```
 
+- **En Fedora:**
+  ```bash
+  sudo dnf update
+  sudo dnf install neovim
+  ```
+
+- **En Arch:**
+  ```bash
+  sudo pacman -S neovim
+  ```
+
 - **Usando el instalador oficial (en cualquier sistema):**
   - Descarga desde [aquí](https://github.com/neovim/neovim/releases).
   
@@ -139,7 +150,7 @@ Packer es un gestor de complementos para Neovim. Si aún no lo tienes, instala P
   ```bash
   nano ~/.config/nvim/init.lua
   ```
-  Copia y pega el contenido del archivo completo que te proporcioné.
+  Copia y pega el contenido del archivo de configuracion.
 
 ### 4. **Instalar los complementos**
 

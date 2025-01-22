@@ -8,94 +8,83 @@ Este documento explica cómo configurar Neovim con varios complementos útiles p
 Este es el archivo de configuración que debes colocar en `~/.config/nvim/init.lua`.
 
 ```lua
--- Configuraciones básicas
-vim.opt.number = true               -- Habilitar numeración
--- vim.opt.relativenumber = true       -- Numeración relativa
-vim.opt.wildmenu = true             -- Habilitar autocompletado de comandos
-vim.opt.hlsearch = true             -- Resaltar búsqueda
-vim.opt.incsearch = true            -- Actualización en tiempo real al escribir
-vim.opt.tabstop = 4                 -- Tamaño de tabulación
-vim.opt.shiftwidth = 4              -- Espaciado al usar indentación
-vim.opt.expandtab = true            -- Convertir tabs en espacios
-vim.opt.clipboard = "unnamedplus"   -- Copiar al portapapeles del sistema
-vim.opt.termguicolors = true        -- Colores 24 bits
-vim.opt.splitbelow = true           -- Dividir ventanas hacia abajo
-vim.opt.splitright = true           -- Dividir ventanas hacia la derecha
+-- Configuración de Neovim por David
 
--- Mapeos de teclas
-vim.api.nvim_set_keymap('n', '<C-n>', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
+-- Opciones básicas
+vim.opt.number = true  -- Habilitar numeración de líneas
+-- vim.opt.relativenumber = true  -- Líneas relativas
+vim.opt.tabstop = 4  -- Tamaño de tabulación
+vim.opt.shiftwidth = 4  -- Tamaño de indentación
+vim.opt.expandtab = true  -- Usar espacios en lugar de tabulaciones
+vim.opt.clipboard = "unnamedplus"  -- Usar portapapeles del sistema
+vim.opt.hlsearch = true  -- Resaltar búsqueda
+vim.opt.incsearch = true  -- Actualización en tiempo real al buscar
 
--- Configuración de complementos usando Packer
+-- Atajos personalizados
+-- Mapear Ctrl+z para deshacer
+vim.api.nvim_set_keymap('n', '<C-z>', 'u', { noremap = true, silent = true })
+-- Mapear Ctrl+y para rehacer
+vim.api.nvim_set_keymap('n', '<C-y>', '<C-r>', { noremap = true, silent = true })
+-- Modo de inserción: Ctrl+z para deshacer y Ctrl+y para rehacer
+vim.api.nvim_set_keymap('i', '<C-z>', '<Esc>u', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('i', '<C-y>', '<Esc><C-r>', { noremap = true, silent = true })
+
+-- Autoguardado
+vim.api.nvim_create_autocmd({"InsertLeave", "TextChanged"}, {
+    pattern = "*",
+    callback = function()
+        if vim.bo.modified then
+            vim.cmd("write")
+        end
+    end,
+})
+
+-- Plugins
 require('packer').startup(function(use)
     use 'wbthomason/packer.nvim' -- Packer se gestiona a sí mismo
     use 'nvim-treesitter/nvim-treesitter' -- Coloreado avanzado
     use 'nvim-lualine/lualine.nvim' -- Barra de estado
     use 'neovim/nvim-lspconfig' -- Configuración de LSP
     use 'hrsh7th/nvim-cmp' -- Autocompletado
-    use 'nvim-tree/nvim-tree.lua' -- Explorador de archivos
+    use 'nvim-telescope/telescope.nvim' -- Búsqueda avanzada
     use {
-        'nvim-telescope/telescope.nvim',
-        requires = { 'nvim-lua/plenary.nvim' }, -- Añadir dependencia plenary.nvim
+        'nvim-tree/nvim-tree.lua',
+        requires = {
+            'nvim-tree/nvim-web-devicons', -- Opcional, para íconos
+        },
+        tag = 'nightly' -- Versión estable
     }
 end)
 
--- Configuración de NvimTree
-require("nvim-tree").setup({
+-- Configuración de plugins
+-- Explorador de archivos NvimTree
+require('nvim-tree').setup {
     view = {
-        width = 30, -- Ancho del explorador
-        side = "left", -- Mostrar a la izquierda
-    },
-    renderer = {
-        icons = {
-            show = {
-                folder = true, -- Mostrar íconos de carpetas
-                file = true,   -- Mostrar íconos de archivos
-            },
-        },
+        width = 30,
+        side = 'left',
     },
     actions = {
         open_file = {
-            quit_on_open = true, -- Cierra el explorador al abrir un archivo
+            quit_on_open = false,
         },
     },
-})
+}
 
--- Apertura automática de NvimTree al iniciar Neovim
-local function open_nvim_tree(data)
-    local directory = vim.fn.isdirectory(data.file) == 1
-    if not directory then
-        return
-    end
-    vim.cmd.cd(data.file)
-    require("nvim-tree.api").tree.open()
-end
-vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = open_nvim_tree })
-
--- Configuración de Treesitter
-require('nvim-treesitter.configs').setup({
-    ensure_installed = { "lua", "python", "javascript", "html", "css" }, -- Idiomas soportados
-    highlight = {
-        enable = true, -- Activar resaltado
-    },
-})
-
--- Configuración de Lualine
-require('lualine').setup({
+-- Barra de estado Lualine
+require('lualine').setup {
     options = {
-        theme = 'gruvbox', -- Cambia el tema según tu preferencia
+        theme = 'gruvbox',
     },
-})
+}
 
--- Configuración básica de Telescope
-require('telescope').setup({
-    defaults = {
-        mappings = {
-            i = {
-                ["<C-u>"] = false, -- Desactivar scroll hacia arriba
-                ["<C-d>"] = false, -- Desactivar scroll hacia abajo
-            },
-        },
-    },
+-- Configuración de Telescope
+require('telescope').setup {}
+
+-- Abrir NvimTree automáticamente al iniciar Neovim
+vim.api.nvim_create_autocmd("VimEnter", {
+    callback = function()
+        require("nvim-tree.api").tree.open()
+    end,
 })
 ```
 

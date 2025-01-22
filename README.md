@@ -234,4 +234,7 @@ Muestra información útil como:
 - **`:Telescope live_grep`**: Buscar texto en los archivos.
 - **`Ctrl+Space`**: Activar autocompletado de código con `nvim-cmp`.
 - **`:TSPlaygroundToggle`**: Ver el análisis sintáctico del código.
-- **`:`**: Ejecutar comandos dentro de Neovim.
+- **`:`**: Ejecutar comandos dentro de Neovim
+- **`:split`** dividir la ventana horizontalmente
+- **`:terminal`**: Abrir una terminal integrada
+
